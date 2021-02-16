@@ -1,6 +1,7 @@
 #include "welcomewidget.h"
 #include "dataloader.h"
 
+#include "homepagewidget.h"
 #include <QApplication>
 #include <QSplashScreen>
 #include <QDesktopWidget>
@@ -38,7 +39,7 @@ int main(int argc, char *argv[])
     }
 
     //主界面
-    WelcomeWidget w;
+    HomePageWidget w;
 
     //debug标签
     QString str;
