@@ -11,7 +11,6 @@ CONFIG += c++11
 SOURCES += \
     dataloader.cpp \
     compassview.cpp \
-    homepagewidget.cpp \
     main.cpp \
     triangleitem.cpp \
     welcomewidget.cpp
@@ -19,12 +18,10 @@ SOURCES += \
 HEADERS += \
     dataloader.h \
     compassview.h \
-    homepagewidget.h \
     triangleitem.h \
     welcomewidget.h
 
 FORMS += \
-    homepagewidget.ui \
     welcomewidget.ui
 
 # Default rules for deployment.

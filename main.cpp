@@ -1,7 +1,6 @@
 #include "welcomewidget.h"
 #include "dataloader.h"
 
-#include "homepagewidget.h"
 #include <QApplication>
 #include <QSplashScreen>
 #include <QDesktopWidget>
@@ -12,6 +11,7 @@
 #include <QLabel>
 #include <QTextStream>
 #include <QString>
+#include "compassview.h"
 
 int main(int argc, char *argv[])
 {
@@ -38,23 +38,32 @@ int main(int argc, char *argv[])
          a.processEvents();
     }
 
-    //主界面
-    HomePageWidget w;
+    // Mark: 创建场景
+    auto compass_scene = new QGraphicsScene;
+
+    // Mark: 创建视图并与场景绑定
+    CompassView compass_view;
+    compass_view.resize(screen.width(),screen.height());
+    compass_view.setScene(compass_scene);
+
+    // Mark: 初始化视图
+    compass_scene->setSceneRect(-screen.width()/2,-screen.height()/2,screen.width(),screen.height());
+    compass_view.Init();
 
     //debug标签
-    QString str;
-    str=dataloader.name(3)+"\n";
-    for(auto s: dataloader.labels)
-    {
-        str+=s+"\n";
-    }
-    QLabel label(&w);
-    label.setFrameStyle(QFrame::Panel | QFrame::Sunken);
-    label.setText(str);
-    label.setAlignment(Qt::AlignBottom | Qt::AlignRight);
+//    QString str;
+//    str=dataloader.name(3)+"\n";
+//    for(auto s: dataloader.labels)
+//    {
+//        str+=s+"\n";
+//    }
+//    QLabel label(&compass_view);
+//    label.setFrameStyle(QFrame::Panel | QFrame::Sunken);
+//    label.setText(str);
+//    label.setAlignment(Qt::AlignBottom | Qt::AlignRight);
 
 
-    w.show();
-    splash.finish(&w);
+    compass_view.show();
+    splash.finish(&compass_view);
     return a.exec();
 }
