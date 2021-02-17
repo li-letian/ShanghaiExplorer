@@ -1,19 +1,25 @@
 #include "compassview.h"
+#include "triangleitem.h"
 
 #include <QMouseEvent>
-#include <QGraphicsItem>
-#include <QDebug>
-#include <QLabel>
+#include <QPixmap>
 
 CompassView::CompassView(QWidget *parent):
     QGraphicsView(parent)
 {
-    label = new QLabel;
-    label->move(200, 200);
-    label->resize(200, 50);
-    label->setText(QString("点击次数"));
-    label->setFont(QFont("宋体", 18));
-    label->setAlignment(Qt::AlignCenter);
+
+}
+
+void CompassView::Init()
+{
+    // Mark: 美化视图
+    this->scene()->setBackgroundBrush(Qt::white);
+    this->setStyleSheet("padding:0px;border:0px");
+
+    // Mark: 添加指南针
+    QPixmap pix;
+    pix.load(":/compass.png");
+    this->scene()->addPixmap(pix);
 }
 
 void CompassView::mousePressEvent(QMouseEvent* event)
@@ -23,7 +29,7 @@ void CompassView::mousePressEvent(QMouseEvent* event)
     QPoint viewPos = event->pos();
     QPointF scenePos = mapToScene(viewPos);
 
-    // 获取点击位置的item
+    // Mark: 获取点击位置的item
     QGraphicsItem *item = scene()->itemAt(scenePos,QTransform());
 
 }
