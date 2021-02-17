@@ -23,7 +23,9 @@ HomePageWidget::HomePageWidget(QWidget *parent) :
     this->setLayout(page_layout);
 
     // Mark: 初始化视图
-
+    auto scene_width = compass_view_->width();
+    auto scene_height = compass_view_->height();
+    compass_scene->setSceneRect(-scene_width/2,-scene_height/2,scene_width,scene_height);
     compass_view_->Init();
 
 }

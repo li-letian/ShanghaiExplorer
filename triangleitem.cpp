@@ -9,10 +9,10 @@ TriangleItem::TriangleItem()
 QPainterPath TriangleItem::shape() const
 {
     QPainterPath path;
-    path.moveTo(100,0);
-    path.lineTo(200,100);
-    path.lineTo(0,100);
-    path.lineTo(100,0);
+    path.moveTo(0,-50);
+    path.lineTo(100,50);
+    path.lineTo(-100,50);
+    path.lineTo(0,-50);
     return path;
 }
 
