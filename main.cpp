@@ -46,6 +46,8 @@ int main(int argc, char *argv[])
     compass_view.resize(screen.width(),screen.height());
     compass_view.setScene(compass_scene);
 
+
+
     // Mark: 初始化视图
     compass_scene->setSceneRect(-screen.width()/2,-screen.height()/2,screen.width(),screen.height());
     compass_view.Init();

@@ -16,10 +16,22 @@ CompassView::CompassView(QWidget *parent):
 
 }
 
+void CompassView::paintAll()
+{
+
+
+}
+
 void CompassView::updateReading()
 {
     compass_reading = compass->reading();
     north_item_->setRotation(-compass_reading->azimuth());
+}
+
+void CompassView::updatePosition(const QGeoPositionInfo &pos)
+{
+    auto latitude=pos.coordinate().latitude();
+    auto longitude=pos.coordinate().longitude();
 }
 
 void CompassView::Init()
@@ -57,6 +69,16 @@ void CompassView::Init()
     compass->setDataRate(1);
     compass->start();
     compass_reading=compass->reading();
+
+
+    //添加定位服务
+    source = QGeoPositionInfoSource::createDefaultSource(this);
+    if (source)
+    {
+        connect(source, SIGNAL(positionUpdated(QGeoPositionInfo)), this,SLOT(updatePosition(QGeoPositionInfo)));
+        source->setPreferredPositioningMethods(QGeoPositionInfoSource::SatellitePositioningMethods);
+        source->startUpdates();
+    }
 }
 
 void CompassView::AddTriangleItem(double rotation_angle,double scale_factor)
