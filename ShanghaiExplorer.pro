@@ -11,17 +11,22 @@ CONFIG += c++11
 SOURCES += \
     dataloader.cpp \
     compassview.cpp \
+    floatpan.cpp \
     main.cpp \
+    qmylabel.cpp \
     triangleitem.cpp \
     welcomewidget.cpp
 
 HEADERS += \
     dataloader.h \
     compassview.h \
+    floatpan.h \
+    qmylabel.h \
     triangleitem.h \
     welcomewidget.h
 
 FORMS += \
+    floatpan.ui \
     welcomewidget.ui
 
 # Default rules for deployment.

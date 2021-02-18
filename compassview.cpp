@@ -1,5 +1,6 @@
 #include "compassview.h"
 #include "triangleitem.h"
+#include "floatpan.h"  //新增加
 
 #include <QMouseEvent>
 #include <QPixmap>
@@ -42,6 +43,9 @@ void CompassView::Init()
     north_item_ = this->scene()->addPixmap(pix_north);
     north_item_->setOffset(-north_item_->boundingRect().width()/2,-north_item_->boundingRect().height()/2);
     north_item_->setPos(width()/2-200,-height()/2+200);
+
+
+
 }
 
 void CompassView::AddTriangleItem(double rotation_angle,double scale_factor)
@@ -64,6 +68,7 @@ void CompassView::mousePressEvent(QMouseEvent* event)
     QGraphicsItem *item = scene()->itemAt(scenePos,QTransform());
     if(item != nullptr && item->type() == TRIANGEL_ITEM_TYPE)
     {
+        //旋转指定角度
         RotateAll(30);
     }
 }
@@ -75,4 +80,9 @@ void CompassView::RotateAll(double rotation_angle)
         triangle-> setRotation(triangle->rotation()+rotation_angle);
     }
     north_item_->setRotation(north_item_->rotation()+rotation_angle);
+}
+
+//将label绑定上相应的信息text
+void CompassView::bindInformation(QLabel* label,QString text){
+    label->setToolTip(text);
 }

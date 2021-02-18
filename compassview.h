@@ -6,7 +6,7 @@
 #include <QGraphicsPixmapItem>
 #include "triangleitem.h"
 #include <vector>
-
+#include <QLabel>
 using std::vector;
 
 class CompassView:public QGraphicsView
@@ -23,6 +23,10 @@ private:
     QGraphicsPixmapItem* compass_item_;
     QGraphicsPixmapItem* north_item_;
     vector<TriangleItem*> triangles_;
+
+    //绑定信息
+    void bindInformation(QLabel* label,QString text);
+
 };
 
 #endif // COMPASSVIEW_H
