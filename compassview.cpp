@@ -1,11 +1,16 @@
 #include "compassview.h"
 #include "triangleitem.h"
-#include "floatpan.h"  //新增加
 
 #include <QMouseEvent>
 #include <QPixmap>
 #include <QLabel>
 #include <string>
+
+#include <QRadioButton>
+#include <QMessageBox>
+#include "dataloader.h"
+#include "sidebar.h"
+#include <QHBoxLayout>
 
 CompassView::CompassView(QWidget *parent):
     QGraphicsView(parent),
@@ -13,16 +18,53 @@ CompassView::CompassView(QWidget *parent):
     north_item_(nullptr)
 {
 
+
 }
 
 void CompassView::Init()
 {
+    //侧边栏相关
+    this->sidebar=new sideBar(this);
+    this->curLabelText=new QLabel(this);
+
+    //向sidebar中添加按钮
+    DataLoader dataLoader;
+    dataLoader.load();
+    int j=0;
+    for (auto i=dataLoader.labels.begin();i!=dataLoader.labels.end();++i,++j){
+        //增加i
+        QRadioButton* button=new QRadioButton(this->sidebar);
+        button->setText(*i);
+        button->setGeometry(0,30*j,button->geometry().width(),button->geometry().height());
+
+        connect(button,&QRadioButton::toggled,this,[=](){
+            //更改所选择标签
+            this->curLabel=button->text();
+            qDebug()<<curLabel;
+            //this->curLabelText->setText(*i);
+        });
+
+        if (j==0) {
+            this->curLabel=*i;
+            //curLabelText->setText(*i);
+        }
+    }
+
+
+    //动画效果初始化
+    this->side_widget_flag=true;
+    this->sidebar->move(this->rect().width()+this->sidebar->width(),0);
+    this->properAnimation=new QPropertyAnimation(sidebar,"geometry");
+    properAnimation->setEasingCurve(QEasingCurve::InOutQuint);
+    properAnimation->setDuration(1000);
+
+
     // Mark: 美化视图
     this->scene()->setBackgroundBrush(Qt::white);
     this->setStyleSheet("padding:0px;border:0px");
 
     // Debug: 测试坐标系统
-    this->AddTriangleItem(30,2.0);
+    this->AddTriangleItem(30,2.0,"Chang\r\nNothing can be better than me.\r\nYes.");
 
     // Mark: 添加指南针
     QPixmap pix_compass;
@@ -48,9 +90,10 @@ void CompassView::Init()
 
 }
 
-void CompassView::AddTriangleItem(double rotation_angle,double scale_factor)
+void CompassView::AddTriangleItem(double rotation_angle,double scale_factor,QString text)
 {
     auto item = new TriangleItem(QColor(236,200,53));
+    this->bindInformation(item,text);
     item->MySetScale(scale_factor);
     item->setRotation(rotation_angle);
     this->scene()->addItem(item);
@@ -70,7 +113,27 @@ void CompassView::mousePressEvent(QMouseEvent* event)
     {
         //旋转指定角度
         RotateAll(30);
+
     }
+}
+
+void CompassView::mouseDoubleClickEvent(QMouseEvent * event)
+{
+    Q_UNUSED(event)
+    if(side_widget_flag){
+        //如果被隐藏，则需要显示
+        properAnimation->setStartValue(QRect(this->rect().width(),0,this->sidebar->width(),this->sidebar->height()));
+        properAnimation->setEndValue(QRect(this->rect().width()-this->sidebar->width(),0,this->sidebar->width(),this->sidebar->height()));
+        properAnimation->start();
+        side_widget_flag=!side_widget_flag;
+    }
+    else{
+        properAnimation->setStartValue(QRect(this->rect().width()-this->sidebar->width(),0,this->sidebar->width(),this->sidebar->height()));
+        properAnimation->setEndValue(QRect(this->rect().width(),0,this->sidebar->width(),this->sidebar->height()));
+        properAnimation->start();
+        side_widget_flag = !side_widget_flag;
+    }
+
 }
 
 void CompassView::RotateAll(double rotation_angle)
@@ -83,6 +146,7 @@ void CompassView::RotateAll(double rotation_angle)
 }
 
 //将label绑定上相应的信息text
-void CompassView::bindInformation(QLabel* label,QString text){
-    label->setToolTip(text);
+void CompassView::bindInformation(TriangleItem* place,QString text){
+    //为该地点绑定一段文本
+    place->setToolTip(text);
 }
