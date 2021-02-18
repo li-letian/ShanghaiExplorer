@@ -5,6 +5,8 @@
 #include <QGraphicsView>
 #include <QGraphicsPixmapItem>
 #include "triangleitem.h"
+#include "dataloader.h"
+#include "detailwidget.h"
 #include <vector>
 #include <QCompass>
 #include <QCompassReading>
@@ -21,7 +23,7 @@ class CompassView:public QGraphicsView
     Q_OBJECT
 public:
     explicit CompassView(QWidget *parent = 0);
-    void Init();
+    void Init(DataLoader* dataloader);
 protected:
     void mousePressEvent(QMouseEvent *event);
 public slots:
@@ -37,7 +39,8 @@ private:
     QCompass *compass;
     QCompassReading *compass_reading;
     QGeoPositionInfoSource* source;
-
+    DataLoader* loader;
+    DetailWidget* detail;
 };
 
 #endif // COMPASSVIEW_H

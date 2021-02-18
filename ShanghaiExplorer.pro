@@ -13,6 +13,7 @@ TEMPLATE = app
 SOURCES += \
     dataloader.cpp \
     compassview.cpp \
+    detailwidget.cpp \
     main.cpp \
     triangleitem.cpp \
     welcomewidget.cpp
@@ -20,10 +21,12 @@ SOURCES += \
 HEADERS += \
     dataloader.h \
     compassview.h \
+    detailwidget.h \
     triangleitem.h \
     welcomewidget.h
 
 FORMS += \
+    detailwidget.ui \
     welcomewidget.ui
 
 # Default rules for deployment.

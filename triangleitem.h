@@ -10,6 +10,7 @@ constexpr int DISTANCE_FROM_ORIGIN = 350;
 class TriangleItem:public QGraphicsItem
 {
 public:
+    int index;
     TriangleItem(QColor color_=Qt::white);
     QRectF boundingRect() const override;
     QPainterPath shape() const override;

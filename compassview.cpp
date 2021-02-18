@@ -1,11 +1,14 @@
 #include "compassview.h"
 #include "triangleitem.h"
+#include "detailwidget.h"
+#include "dataloader.h"
 
 #include <QMouseEvent>
 #include <QPixmap>
 #include <QLabel>
 #include <string>
 #include <QTimer>
+#include <QPropertyAnimation>
 
 
 CompassView::CompassView(QWidget *parent):
@@ -34,8 +37,9 @@ void CompassView::updatePosition(const QGeoPositionInfo &pos)
     auto longitude=pos.coordinate().longitude();
 }
 
-void CompassView::Init()
+void CompassView::Init(DataLoader* dataloader)
 {
+    loader=dataloader;
     // Mark: 美化视图
     this->scene()->setBackgroundBrush(Qt::white);
     this->setStyleSheet("padding:0px;border:0px");
@@ -79,6 +83,10 @@ void CompassView::Init()
         source->setPreferredPositioningMethods(QGeoPositionInfoSource::SatellitePositioningMethods);
         source->startUpdates();
     }
+
+    //添加介绍页面
+    detail=new DetailWidget(this);
+    detail->hide();
 }
 
 void CompassView::AddTriangleItem(double rotation_angle,double scale_factor)
@@ -101,7 +109,9 @@ void CompassView::mousePressEvent(QMouseEvent* event)
     QGraphicsItem *item = scene()->itemAt(scenePos,QTransform());
     if(item != nullptr && item->type() == TRIANGEL_ITEM_TYPE)
     {
-        RotateAll(30);
+        int index=dynamic_cast<TriangleItem*>(item)->index;
+        detail->updateText(loader->name(index),loader->address(index),loader->intro(index));
+        detail->show();
     }
 }
 

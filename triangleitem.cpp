@@ -6,6 +6,7 @@ TriangleItem::TriangleItem(QColor color)
 {
     this->setPos(0,-DISTANCE_FROM_ORIGIN);
     this->setTransformOriginPoint(0,DISTANCE_FROM_ORIGIN);
+    index=0;
 }
 
 QPainterPath TriangleItem::shape() const
