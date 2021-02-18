@@ -5,6 +5,8 @@
 #include <QPixmap>
 #include <QLabel>
 #include <string>
+#include <QTimer>
+
 
 CompassView::CompassView(QWidget *parent):
     QGraphicsView(parent),
@@ -12,6 +14,12 @@ CompassView::CompassView(QWidget *parent):
     north_item_(nullptr)
 {
 
+}
+
+void CompassView::updateReading()
+{
+    compass_reading = compass->reading();
+    north_item_->setRotation(-compass_reading->azimuth());
 }
 
 void CompassView::Init()
@@ -42,6 +50,13 @@ void CompassView::Init()
     north_item_ = this->scene()->addPixmap(pix_north);
     north_item_->setOffset(-north_item_->boundingRect().width()/2,-north_item_->boundingRect().height()/2);
     north_item_->setPos(width()/2-200,-height()/2+200);
+
+    //添加指南针传感器
+    compass = new QCompass(this);
+    connect(compass, SIGNAL(readingChanged()), this, SLOT(updateReading()));
+    compass->setDataRate(1);
+    compass->start();
+    compass_reading=compass->reading();
 }
 
 void CompassView::AddTriangleItem(double rotation_angle,double scale_factor)
@@ -74,5 +89,5 @@ void CompassView::RotateAll(double rotation_angle)
     {
         triangle-> setRotation(triangle->rotation()+rotation_angle);
     }
-    north_item_->setRotation(north_item_->rotation()+rotation_angle);
+    //north_item_->setRotation(north_item_->rotation()+rotation_angle);
 }

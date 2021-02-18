@@ -65,5 +65,6 @@ int main(int argc, char *argv[])
 
     compass_view.show();
     splash.finish(&compass_view);
+
     return a.exec();
 }

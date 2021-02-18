@@ -1,8 +1,10 @@
-QT       += core gui
+lessThan(QT_MAJOR_VERSION, 5): error(This project requires Qt 5 or later)
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT += core gui widgets sensors positioning
 
 CONFIG += c++11
+
+TEMPLATE = app
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -31,5 +33,3 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     resources/resources.qrc
-
-ANDROID_ABIS = armeabi-v7a
