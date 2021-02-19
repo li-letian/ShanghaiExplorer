@@ -3,6 +3,7 @@
 #include <QGuiApplication>
 #include <QScreen>
 #include <QScroller>
+#include <QScrollBar>
 
 SideBarWidget::SideBarWidget(QWidget *parent) :
     QListWidget(parent)
@@ -19,6 +20,8 @@ void SideBarWidget::init(DataLoader* loader)
     setMovement(QListView::Static);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setVerticalScrollMode(ScrollMode::ScrollPerPixel);
+    setHorizontalScrollMode(ScrollMode::ScrollPerPixel);
     QScroller::grabGesture(this,QScroller::LeftMouseButtonGesture);
     for(auto label:loader->labels)
     {

@@ -23,10 +23,9 @@ public:
     void MySetPos(double rotation_angle = 0, double scale_factor = 1.0, int delta_num = 0);
 
     int GetDeltaNum() const { return delta_num_; }
-    int SetDeltaNum(const int delta_num) { delta_num_ = delta_num; }
+    void SetDeltaNum(const int delta_num) { delta_num_ = delta_num; }
 
     double Distance() { return BASE_DISTANCE + DELTA * delta_num_; }
-    int index;
 
 private:
     QColor color_;

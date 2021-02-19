@@ -15,23 +15,97 @@
 #include <QGuiApplication>
 #include <QScreen>
 #include <cmath>
-#define PI acos(-1)
+#include <algorithm>
+
 using namespace std;
 
-CompassView::CompassView(QWidget *parent) : QGraphicsView(parent),
-                                            compass_item_(nullptr),
-                                            north_item_(nullptr)
+CompassView::CompassView(QWidget *parent) :
+    QGraphicsView(parent),
+    compass_item_(nullptr),
+    north_item_(nullptr)
 {
 }
 
 void CompassView::paintAll()
 {
-    north_item_->setRotation(-compass_reading->azimuth());
+    auto azimuth=compass_reading->azimuth();
+
+    for(auto item:triangles_)
+    {
+        auto index=item->index;
+        auto la1=latitude;
+        auto lo1=longitude;
+        auto la2=loader->latitude(index).toDouble();
+        auto lo2=loader->longitude(index).toDouble();
+        auto dis0=algorithm(lo1,la1,lo2,la2);
+        auto dis1=algorithm(lo1,la2,lo2,la2);
+        auto base_angle=asin(dis1/dis0)*180.0/PI;
+        double ang=0;
+        if(la2>la1)
+        {
+            if(lo2<lo1)
+            {
+                ang=360.0-base_angle;
+            }
+            else if(lo2>lo1)
+            {
+                ang=base_angle;
+            }
+            else
+            {
+                ang=0.0;
+            }
+        }
+        else if(la2<la1)
+        {
+            if(lo2<lo1)
+            {
+                ang=180.0+base_angle;
+            }
+            else if(lo2>lo1)
+            {
+                ang=180.0-base_angle;
+            }
+            else
+            {
+                ang=180.0;
+            }
+        }
+        else
+        {
+            if(lo2<lo1)
+            {
+                ang=270.0;
+            }
+            else if(lo2>lo1)
+            {
+                ang=90.0;
+            }
+        }
+        ang-=azimuth;
+        while(ang<0.0)
+        {
+            ang+=360.0;
+        }
+        while(ang>360.0)
+        {
+            ang-=360.0;
+        }
+        item->setRotation(ang);
+    }
+//    std::sort(triangles_.begin(),triangles_.end(),[=](TriangleItem* const A,TriangleItem* const B){return A->rotation()<B->rotation();});
+//    int len=triangles_.size();
+//    for(int i=0;i<len;i++)
+//    {
+
+//    }
+
 }
 
 void CompassView::updateReading()
 {
     compass_reading = compass->reading();
+    north_item_->setRotation(-compass->reading()->azimuth());
     paintAll();
 }
 
@@ -96,7 +170,7 @@ void CompassView::Init(DataLoader *dataloader)
     button->move(5, 5);
     QIcon icon(QPixmap(":/button.png"));
     button->setIcon(icon);
-    button->setIconSize(QSize(button->width() * screen.height() / (10 * button->height()), screen.height() / 10));
+    button->setIconSize(QSize(screen.width() /10, screen.height() / 10));
     button->show();
     connect(button, SIGNAL(clicked()), side_bar, SLOT(fade()));
     connect(side_bar, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(changeLabel(QListWidgetItem *)));
@@ -161,29 +235,5 @@ void CompassView::RotateAll(double rotation_angle)
     {
         triangle->setRotation(triangle->rotation() + rotation_angle);
     }
-    //north_item_->setRotation(north_item_->rotation()+rotation_angle);
-}
-
-double rad(double d)
-{
-    return d * PI / 180.00; //角度转换成弧度
-}
-
-double algorithm(double longitude1, double latitude1, double longitude2, double latitude2)
-{
-    double Lat1 = rad(latitude1); // 纬度
-
-    double Lat2 = rad(latitude2);
-
-    double a = Lat1 - Lat2; //两点纬度之差
-
-    double b = rad(longitude1) - rad(longitude2); //经度之差
-
-    double s = 2 * asin(sqrt(pow(sin(a / 2), 2) + cos(Lat1) * cos(Lat2) * pow(sin(b / 2), 2))); //计算两点距离的公式
-
-    s = s * 6378137.0; //弧长乘地球半径（半径为米）
-
-    s = round(s * 10000.0) / 10000.0; //精确距离的数值
-
-    return s;
+    north_item_->setRotation(north_item_->rotation()+rotation_angle);
 }
