@@ -3,6 +3,7 @@
 
 #include <QJsonDocument>
 #include <QJsonParseError>
+#include <QJsonValue>
 #include <QFile>
 #include <QJsonObject>
 #include <QDebug>
@@ -15,6 +16,7 @@ class DataLoader
 public:
 
     QJsonArray archi;
+    QString current_label;
 
     std::set<QString>labels;
 
@@ -49,11 +51,15 @@ public:
         index=index%size();
         return archi.at(index).toObject()["latitude"].toString();
     }
-    bool checkLabel(int index,QString str)
+    bool check(int index)
     {
+        if(current_label.isEmpty())
+        {
+            return index<10;
+        }
         index=index%size();
         auto labels=archi.at(index).toObject()["labels"].toArray();
-        return labels.contains(str);
+        return labels.contains(QJsonValue(current_label));
     }
 };
 

@@ -4,5 +4,6 @@
         <file>data.json</file>
         <file>compass.png</file>
         <file>north-direction.png</file>
+        <file>button.png</file>
     </qresource>
 </RCC>

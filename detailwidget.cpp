@@ -1,5 +1,4 @@
 #include "detailwidget.h"
-#include "ui_detailwidget.h"
 #include "dataloader.h"
 
 #include <QApplication>
@@ -10,19 +9,21 @@
 #include <QSize>
 
 DetailWidget::DetailWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::DetailWidget)
+    QWidget(parent)
 {
-    ui->setupUi(this);
     auto screens = QGuiApplication::screens();
     auto screen=screens.at(0)->availableGeometry();
-    this->resize(screen.width()*2/3,screen.height()*2/3);
-    this->move(screen.width()/6,screen.height()/6);
+    this->resize(screen.width()*5/6,screen.height()*2/3);
+    this->move(screen.width()/12,screen.height()/3);
+
+    setStyleSheet("background-color:rgb(255,255,255,220);color:black;border-radius:20px;border:5px solid green;font:20pt;");
 
     label=new QLabel(this);
-    label->resize(screen.width()/2,screen.height()/2);
-    label->move(screen.width()/12,screen.height()/12);
-
+    QFont font("宋体",20,75);
+    label->setFont(font);
+    label->resize(screen.width()*2/3,screen.height()/2);
+    label->move(screen.width()/12,screen.width()/12);
+    label->setAlignment(Qt::AlignLeft|Qt::AlignTop);
     connect(this,SIGNAL(clicked()),this,SLOT(hideDetail()));
 }
 
@@ -43,5 +44,4 @@ void DetailWidget::hideDetail()
 
 DetailWidget::~DetailWidget()
 {
-    delete ui;
 }

@@ -2,6 +2,7 @@
 #include "triangleitem.h"
 #include "detailwidget.h"
 #include "dataloader.h"
+#include "sidebarwidget.h"
 
 #include <QMouseEvent>
 #include <QPixmap>
@@ -9,6 +10,10 @@
 #include <string>
 #include <QTimer>
 #include <QPropertyAnimation>
+#include <cstdlib>
+#include <QPushButton>
+#include <QGuiApplication>
+#include <QScreen>
 
 
 CompassView::CompassView(QWidget *parent):
@@ -21,44 +26,41 @@ CompassView::CompassView(QWidget *parent):
 
 void CompassView::paintAll()
 {
-
+    north_item_->setRotation(-compass_reading->azimuth());
 
 }
 
 void CompassView::updateReading()
 {
     compass_reading = compass->reading();
-    north_item_->setRotation(-compass_reading->azimuth());
+    paintAll();
 }
 
 void CompassView::updatePosition(const QGeoPositionInfo &pos)
 {
-    auto latitude=pos.coordinate().latitude();
-    auto longitude=pos.coordinate().longitude();
+    longitude=pos.coordinate().longitude();
+    latitude=pos.coordinate().latitude();
+    paintAll();
 }
 
 void CompassView::Init(DataLoader* dataloader)
 {
+    auto screens = QGuiApplication::screens();
+    auto screen=screens.at(0)->availableGeometry();
+
     loader=dataloader;
     // Mark: 美化视图
     this->scene()->setBackgroundBrush(Qt::white);
     this->setStyleSheet("padding:0px;border:0px");
 
-    // Debug: 测试坐标系统
-    this->AddTriangleItem(30,2.0);
+    //加入建筑
+    AddTriangles();
 
     // Mark: 添加指南针
     QPixmap pix_compass;
     pix_compass.load(":/compass.png");
     compass_item_ = this->scene()->addPixmap(pix_compass);
     compass_item_->setOffset(-compass_item_->boundingRect().width()/2,-compass_item_->boundingRect().height()/2);
-
-    // Label Debug
-//    auto label = new QLabel;
-//    label->move(300,500);
-//    label->resize(100,50);
-//    label->setText(QString(std::to_string(this->width()).data()));
-//    scene()->addWidget(label);
 
     // Mark: 添加指北
     QPixmap pix_north;
@@ -74,7 +76,6 @@ void CompassView::Init(DataLoader* dataloader)
     compass->start();
     compass_reading=compass->reading();
 
-
     //添加定位服务
     source = QGeoPositionInfoSource::createDefaultSource(this);
     if (source)
@@ -87,13 +88,53 @@ void CompassView::Init(DataLoader* dataloader)
     //添加介绍页面
     detail=new DetailWidget(this);
     detail->hide();
+
+    //添加侧边栏
+    side_bar=new SideBarWidget(this);
+    side_bar->init(loader);
+
+    auto button = new QPushButton(this);
+    button->move(5,5);
+    QIcon icon(QPixmap(":/button.png"));
+    button->setIcon(icon);
+    button->setIconSize(QSize(button->width()*screen.height()/(10*button->height()),screen.height()/10));
+    button->show();
+    connect(button,SIGNAL(clicked()),side_bar,SLOT(fade()));
+    connect(side_bar,SIGNAL(itemClicked(QListWidgetItem *)),this,SLOT(changeLabel(QListWidgetItem *)));
 }
 
-void CompassView::AddTriangleItem(double rotation_angle,double scale_factor)
+void CompassView::changeLabel(QListWidgetItem *item)
 {
-    auto item = new TriangleItem(QColor(236,200,53));
+    loader->current_label=item->text();
+    AddTriangles();
+}
+
+void CompassView::AddTriangles()
+{
+    for(auto item:triangles_)
+    {
+        this->scene()->removeItem(item);
+        delete item;
+    }
+    triangles_.clear();
+    int len=loader->size();
+    int delta=36;
+    for(int index=0;index<len;index++)
+    {
+        if(loader->check(index))
+        {
+            this->AddTriangleItem(delta*index,1.0,index);
+        }
+    }
+}
+
+void CompassView::AddTriangleItem(double rotation_angle,double scale_factor,int index)
+{
+    auto color_id=rand()%5;
+    auto item = new TriangleItem(QColor(color[color_id][0],color[color_id][1],color[color_id][2]));
     item->MySetScale(scale_factor);
     item->setRotation(rotation_angle);
+    item->index=index;
     this->scene()->addItem(item);
     triangles_.push_back(item);
 }

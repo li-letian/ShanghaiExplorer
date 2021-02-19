@@ -15,19 +15,17 @@ SOURCES += \
     compassview.cpp \
     detailwidget.cpp \
     main.cpp \
-    triangleitem.cpp \
-    welcomewidget.cpp
+    sidebarwidget.cpp \
+    triangleitem.cpp
 
 HEADERS += \
     dataloader.h \
     compassview.h \
     detailwidget.h \
-    triangleitem.h \
-    welcomewidget.h
+    sidebarwidget.h \
+    triangleitem.h
 
-FORMS += \
-    detailwidget.ui \
-    welcomewidget.ui
+FORMS +=
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -36,3 +34,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     resources/resources.qrc
+
+DISTFILES +=

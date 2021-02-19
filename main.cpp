@@ -1,4 +1,3 @@
-#include "welcomewidget.h"
 #include "dataloader.h"
 
 #include <QApplication>

@@ -31,7 +31,6 @@ protected:
     virtual void mouseReleaseEvent(QMouseEvent * ev);
 
 private:
-    Ui::DetailWidget *ui;
     QLabel* label;
 };
 
