@@ -37,6 +37,8 @@ private:
     QCompass *compass;
     QCompassReading *compass_reading;
     QGeoPositionInfoSource* source;
+    double CalculateDistance();
+
 
 };
 
