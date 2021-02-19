@@ -48,6 +48,8 @@ private:
     DataLoader* loader;
     DetailWidget* detail;
     SideBarWidget* side_bar;
+    double CalculateDistance();
+
 
     int color[5][3]={{236,200,53},{235,98,66},{118,170,209},{34,172,56},{159,160,160},};
 };
