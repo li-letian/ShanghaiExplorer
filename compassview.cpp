@@ -43,7 +43,7 @@ void CompassView::Init()
     this->setStyleSheet("padding:0px;border:0px");
 
     // Debug: 测试坐标系统
-    this->AddTriangleItem(30,2.0);
+    this->AddTriangleItem(30,1.0);
 
     // Mark: 添加指南针
     QPixmap pix_compass;

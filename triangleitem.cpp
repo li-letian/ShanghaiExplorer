@@ -1,12 +1,14 @@
 #include "triangleitem.h"
 #include <QPainter>
 
-TriangleItem::TriangleItem(QColor color,int delta_num)
+TriangleItem::TriangleItem(QColor color,double distance,double scale_factor)
     :color_(color),
-    delta_num_(delta_num)
+    distance_(distance),
+    scale_factor_(scale_factor)
 {
-    this->setPos(0,-Distance());
-    this->setTransformOriginPoint(0,Distance());
+    this->setPos(0,-distance_);
+    this->setTransformOriginPoint(0,distance_);
+    this->MySetScale(scale_factor_);
 }
 
 QPainterPath TriangleItem::shape() const
@@ -32,16 +34,15 @@ void TriangleItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
 
 void TriangleItem::MySetScale(double scale_factor)
 {
-    this->setScale(scale_factor);
-    this->setPos(0,-Distance()/scale_factor);
-    this->setTransformOriginPoint(0,Distance()/scale_factor);
+    this->scale_factor_ = scale_factor;
+    this->setScale(scale_factor_);
+    this->setPos(0,-distance_/scale_factor_);
+    this->setTransformOriginPoint(0,distance_/scale_factor_);
 }
 
-void TriangleItem::MySetPos(double rotation_angle, double scale_factor, int delta_num)
+void TriangleItem::SetDistance(double distance)
 {
-    delta_num_=delta_num;
-    this->setPos(0,-Distance());
-    this->setTransformOriginPoint(0,Distance());
-    this->MySetScale(scale_factor);
-    this->setRotation(rotation_angle);
+    distance_ = distance;
+    this->setPos(0, -distance_/scale_factor_);
+    this->setTransformOriginPoint(0,distance_/scale_factor_);
 }
