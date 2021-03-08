@@ -19,87 +19,85 @@
 
 using namespace std;
 
-CompassView::CompassView(QWidget *parent) :
-    QGraphicsView(parent),
-    compass_item_(nullptr),
-    north_item_(nullptr)
+CompassView::CompassView(QWidget *parent) : QGraphicsView(parent),
+                                            compass_item_(nullptr),
+                                            north_item_(nullptr)
 {
 }
 
 void CompassView::paintAll()
 {
-    auto azimuth=compass_reading->azimuth();
+    auto azimuth = compass_reading->azimuth();
 
-    for(auto item:triangles_)
+    for (auto item : triangles_)
     {
-        auto index=item->index;
-        auto la1=latitude;
-        auto lo1=longitude;
-        auto la2=loader->latitude(index);
-        auto lo2=loader->longitude(index);
-        auto dis0=algorithm(lo1,la1,lo2,la2);
-        auto dis1=algorithm(lo1,la2,lo2,la2);
-        auto base_angle=asin(dis1/dis0)*180.0/PI;
-        double ang=0;
-        if(la2>la1)
+        auto index = item->index;
+        auto la1 = latitude;
+        auto lo1 = longitude;
+        auto la2 = loader->latitude(index);
+        auto lo2 = loader->longitude(index);
+        auto dis0 = algorithm(lo1, la1, lo2, la2);
+        auto dis1 = algorithm(lo1, la2, lo2, la2);
+        auto base_angle = asin(dis1 / dis0) * 180.0 / PI;
+        double ang = 0;
+        if (la2 > la1)
         {
-            if(lo2<lo1)
+            if (lo2 < lo1)
             {
-                ang=360.0-base_angle;
+                ang = 360.0 - base_angle;
             }
-            else if(lo2>lo1)
+            else if (lo2 > lo1)
             {
-                ang=base_angle;
+                ang = base_angle;
             }
             else
             {
-                ang=0.0;
+                ang = 0.0;
             }
         }
-        else if(la2<la1)
+        else if (la2 < la1)
         {
-            if(lo2<lo1)
+            if (lo2 < lo1)
             {
-                ang=180.0+base_angle;
+                ang = 180.0 + base_angle;
             }
-            else if(lo2>lo1)
+            else if (lo2 > lo1)
             {
-                ang=180.0-base_angle;
+                ang = 180.0 - base_angle;
             }
             else
             {
-                ang=180.0;
+                ang = 180.0;
             }
         }
         else
         {
-            if(lo2<lo1)
+            if (lo2 < lo1)
             {
-                ang=270.0;
+                ang = 270.0;
             }
-            else if(lo2>lo1)
+            else if (lo2 > lo1)
             {
-                ang=90.0;
+                ang = 90.0;
             }
         }
-        ang-=azimuth;
-        while(ang<0.0)
+        ang -= azimuth;
+        while (ang < 0.0)
         {
-            ang+=360.0;
+            ang += 360.0;
         }
-        while(ang>360.0)
+        while (ang > 360.0)
         {
-            ang-=360.0;
+            ang -= 360.0;
         }
         item->setRotation(ang);
     }
-//    std::sort(triangles_.begin(),triangles_.end(),[=](TriangleItem* const A,TriangleItem* const B){return A->rotation()<B->rotation();});
-//    int len=triangles_.size();
-//    for(int i=0;i<len;i++)
-//    {
+    //    std::sort(triangles_.begin(),triangles_.end(),[=](TriangleItem* const A,TriangleItem* const B){return A->rotation()<B->rotation();});
+    //    int len=triangles_.size();
+    //    for(int i=0;i<len;i++)
+    //    {
 
-//    }
-
+    //    }
 }
 
 void CompassView::updateReading()
@@ -126,8 +124,8 @@ void CompassView::Init(DataLoader *dataloader)
     this->scene()->setBackgroundBrush(Qt::white);
     this->setStyleSheet("padding:0px;border:0px");
 
-    //加入建筑
-    AddTriangles();
+    // Debug: 测试坐标系统
+    this->AddTriangleItem(30, 1.0);
 
     // Mark: 添加指南针
     QPixmap pix_compass;
@@ -170,7 +168,7 @@ void CompassView::Init(DataLoader *dataloader)
     button->move(5, 5);
     QIcon icon(QPixmap(":/button.png"));
     button->setIcon(icon);
-    button->setIconSize(QSize(screen.width() /10, screen.height() / 10));
+    button->setIconSize(QSize(screen.width() / 10, screen.height() / 10));
     button->show();
     connect(button, SIGNAL(clicked()), side_bar, SLOT(fade()));
     connect(side_bar, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(changeLabel(QListWidgetItem *)));
@@ -224,7 +222,7 @@ void CompassView::mousePressEvent(QMouseEvent *event)
     if (item != nullptr && item->type() == TRIANGEL_ITEM_TYPE)
     {
         int index = dynamic_cast<TriangleItem *>(item)->index;
-        detail->updateText(loader->pic(index),loader->name(index), loader->address(index), loader->intro(index));
+        detail->updateText(loader->pic(index), loader->name(index), loader->address(index), loader->intro(index));
         detail->show();
     }
 }
@@ -235,5 +233,5 @@ void CompassView::RotateAll(double rotation_angle)
     {
         triangle->setRotation(triangle->rotation() + rotation_angle);
     }
-    north_item_->setRotation(north_item_->rotation()+rotation_angle);
+    north_item_->setRotation(north_item_->rotation() + rotation_angle);
 }
