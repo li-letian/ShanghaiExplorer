@@ -46,22 +46,9 @@ int main(int argc, char *argv[])
     compass_view.setScene(compass_scene);
 
 
-
     // Mark: 初始化视图
     compass_scene->setSceneRect(-screen.width()/2,-screen.height()/2,screen.width(),screen.height());
     compass_view.Init(&dataloader);
-
-    //debug标签
-//    QString str;
-//    str=dataloader.name(3)+"\n";
-//    for(auto s: dataloader.labels)
-//    {
-//        str+=s+"\n";
-//    }
-//    QLabel label(&compass_view);
-//    label.setFrameStyle(QFrame::Panel | QFrame::Sunken);
-//    label.setText(str);
-//    label.setAlignment(Qt::AlignBottom | Qt::AlignRight);
 
 
     compass_view.show();

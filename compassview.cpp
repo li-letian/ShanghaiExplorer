@@ -35,8 +35,8 @@ void CompassView::paintAll()
         auto index=item->index;
         auto la1=latitude;
         auto lo1=longitude;
-        auto la2=loader->latitude(index).toDouble();
-        auto lo2=loader->longitude(index).toDouble();
+        auto la2=loader->latitude(index);
+        auto lo2=loader->longitude(index);
         auto dis0=algorithm(lo1,la1,lo2,la2);
         auto dis1=algorithm(lo1,la2,lo2,la2);
         auto base_angle=asin(dis1/dis0)*180.0/PI;
@@ -224,7 +224,7 @@ void CompassView::mousePressEvent(QMouseEvent *event)
     if (item != nullptr && item->type() == TRIANGEL_ITEM_TYPE)
     {
         int index = dynamic_cast<TriangleItem *>(item)->index;
-        detail->updateText(loader->name(index), loader->address(index), loader->intro(index));
+        detail->updateText(loader->pic(index),loader->name(index), loader->address(index), loader->intro(index));
         detail->show();
     }
 }

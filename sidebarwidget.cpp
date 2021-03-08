@@ -23,16 +23,84 @@ void SideBarWidget::init(DataLoader* loader)
     setVerticalScrollMode(ScrollMode::ScrollPerPixel);
     setHorizontalScrollMode(ScrollMode::ScrollPerPixel);
     QScroller::grabGesture(this,QScroller::LeftMouseButtonGesture);
-    for(auto label:loader->labels)
+
+    QFont font("宋体",20,75);
+    QFont fonti("宋体",20,75);
+    auto item = new QListWidgetItem;
+    item->setText("设计师：");
+    item->setFont(font);
+    item->setBackground(QColor(236,200,53));
+    this->addItem(item);
+    item->setSizeHint(QSize(screen.width()*3/5,screen.height()/6));
+    for(auto designer:loader->designer)
     {
-        auto item = new QListWidgetItem;
-        QFont font("宋体",20,75);
-        item->setText(label);
-        item->setFont(font);
+        item = new QListWidgetItem;
+        item->setText(designer);
+        item->setFont(fonti);
         this->addItem(item);
         item->setSizeHint(QSize(screen.width()*3/5,screen.height()/15));
-
     }
+
+    item = new QListWidgetItem;
+    item->setText("保护批次：");
+    item->setFont(font);
+    item->setBackground(QColor(235,98,66));
+    this->addItem(item);
+    item->setSizeHint(QSize(screen.width()*3/5,screen.height()/6));
+    for(auto batch:loader->batch)
+    {
+        item = new QListWidgetItem;
+        item->setText(batch);
+        item->setFont(fonti);
+        this->addItem(item);
+        item->setSizeHint(QSize(screen.width()*3/5,screen.height()/15));
+    }
+
+    item = new QListWidgetItem;
+    item->setText("年代：");
+    item->setFont(font);
+    item->setBackground(QColor(118,170,209));
+    this->addItem(item);
+    item->setSizeHint(QSize(screen.width()*3/5,screen.height()/6));
+    for(auto period:loader->period)
+    {
+        item = new QListWidgetItem;
+        item->setText(period);
+        item->setFont(fonti);
+        this->addItem(item);
+        item->setSizeHint(QSize(screen.width()*3/5,screen.height()/15));
+    }
+
+    item = new QListWidgetItem;
+    item->setText("建筑风格：");
+    item->setFont(font);
+    item->setBackground(QColor(34,172,56));
+    this->addItem(item);
+    item->setSizeHint(QSize(screen.width()*3/5,screen.height()/6));
+    for(auto style:loader->style)
+    {
+        item = new QListWidgetItem;
+        item->setText(style);
+        item->setFont(fonti);
+        this->addItem(item);
+        item->setSizeHint(QSize(screen.width()*3/5,screen.height()/15));
+    }
+
+    item = new QListWidgetItem;
+    item->setText("建筑类型：");
+    item->setFont(font);
+    item->setBackground(QColor(159,160,160));
+    this->addItem(item);
+    item->setSizeHint(QSize(screen.width()*3/5,screen.height()/6));
+    for(auto type:loader->type)
+    {
+        item = new QListWidgetItem;
+        item->setText(type);
+        item->setFont(fonti);
+        this->addItem(item);
+        item->setSizeHint(QSize(screen.width()*3/5,screen.height()/15));
+    }
+
     isopen=false;
     animation= new QPropertyAnimation(this,"geometry");
     animation->setEasingCurve(QEasingCurve::InOutQuint);

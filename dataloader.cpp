@@ -21,16 +21,12 @@ bool DataLoader::load()
     int len=archi.size();
     for(int index=0;index<len;index++)
     {
-        auto labels_array=archi.at(index).toObject()["labels"].toArray();
-        int s=labels_array.size();
-        for(int j=0;j<s;j++)
-        {
-            auto str=labels_array[j].toString();
-            if(labels.find(str)==labels.end())
-            {
-                labels.insert(str);
-            }
-        }
+        auto labels=archi.at(index).toObject()["labels"].toObject();
+        designer.insert(labels["designer"].toString());
+        batch.insert(labels["batch"].toString());
+        period.insert(labels["period"].toString());
+        style.insert(labels["style"].toString());
+        type.insert(labels["type"].toString());
     }
     return true;
 }

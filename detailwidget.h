@@ -19,7 +19,7 @@ public:
     explicit DetailWidget(QWidget *parent = nullptr);
     ~DetailWidget();
 
-    void updateText(QString name,QString address,QString intro);
+    void updateText(QString pic,QString name,QString address,QString intro);
 
 signals:
     void clicked();
@@ -32,6 +32,7 @@ protected:
 
 private:
     QLabel* label;
+    QLabel* pic;
 };
 
 #endif // DETAILWIDGET_H

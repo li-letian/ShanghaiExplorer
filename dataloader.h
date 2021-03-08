@@ -18,12 +18,24 @@ public:
     QJsonArray archi;
     QString current_label;
 
-    std::set<QString>labels;
+    std::set<QString>designer;
+    std::set<QString>batch;
+    std::set<QString>period;
+    std::set<QString>style;
+    std::set<QString>type;
 
     bool load();
     int size()
     {
         return archi.size();
+    }
+
+    QString pic(int index)
+    {
+        //记得初始化图片
+        index=index%size();
+        //return archi.at(index).toObject()["pic"].toString();
+        return QString("");
     }
 
     QString name(int index)
@@ -41,15 +53,15 @@ public:
         index=index%size();
         return archi.at(index).toObject()["intro"].toString();
     }
-    QString longitude(int index)
+    double longitude(int index)
     {
         index=index%size();
-        return archi.at(index).toObject()["longitude"].toString();
+        return archi.at(index).toObject()["longitude"].toDouble();
     }
-    QString latitude(int index)
+    double latitude(int index)
     {
         index=index%size();
-        return archi.at(index).toObject()["latitude"].toString();
+        return archi.at(index).toObject()["latitude"].toDouble();
     }
     bool check(int index)
     {
@@ -58,8 +70,16 @@ public:
             return index<10;
         }
         index=index%size();
-        auto labels=archi.at(index).toObject()["labels"].toArray();
-        return labels.contains(QJsonValue(current_label));
+        auto labels=archi.at(index).toObject()["labels"].toObject();
+        for(auto it=labels.begin();it!=labels.end();it++)
+        {
+            auto label=it.value().toString();
+            if(label==current_label)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 };
 
