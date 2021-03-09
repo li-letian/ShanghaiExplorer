@@ -25,10 +25,24 @@ CompassView::CompassView(QWidget *parent) : QGraphicsView(parent),
 {
 }
 
+int JudgeCover(TriangleItem* a,TriangleItem* b)
+{
+    auto degreea=asin(a->GetZhijiaobianLength()/a->GetDistance())* 180.0 / PI;
+    auto degreeb=asin(b->GetZhijiaobianLength()/b->GetDistance())* 180.0 / PI;
+    auto degree=abs(a->rotation()-b->rotation());
+    if(degreea+degreeb>degree&&(a->GetDistance()-b->GetDistance()<DELTA_DISTANCE))
+    {
+        if(a->real_distance<b->real_distance)
+            return 1;
+        else
+            return -1;
+    }
+    return 0;
+}
+
 void CompassView::paintAll()
 {
     auto azimuth = compass_reading->azimuth();
-
     for (auto item : triangles_)
     {
         auto index = item->index;
@@ -91,13 +105,39 @@ void CompassView::paintAll()
             ang -= 360.0;
         }
         item->setRotation(ang);
+        item->real_distance=dis0;
     }
-    //    std::sort(triangles_.begin(),triangles_.end(),[=](TriangleItem* const A,TriangleItem* const B){return A->rotation()<B->rotation();});
-    //    int len=triangles_.size();
-    //    for(int i=0;i<len;i++)
-    //    {
-
-    //    }
+    double mindis=(1<<30);
+    for(auto item:triangles_)
+    {
+        if(item->real_distance<mindis)
+        {
+            mindis=item->real_distance;
+        }
+    }
+    for(auto item:triangles_)
+    {
+        double scale=(item->real_distance/mindis);
+        item->MySetScale(scale);
+        item->SetDistance(BASE_DISTANCE+(scale-1.0)*DELTA_DISTANCE);
+    }
+    int len=triangles_.size();
+    for(int i=0;i<len;i++)
+    {
+        for(int j=i+1;j<i+len-1;j++)
+        {
+            int k=j%len;
+            int ans=JudgeCover(triangles_.at(i),triangles_.at(k));
+            if(ans<0)
+            {
+                triangles_.at(i)->SetDistance(triangles_.at(i)->GetDistance()+DELTA_DISTANCE);
+            }
+            else if(ans>0)
+            {
+               triangles_.at(k)->SetDistance(triangles_.at(k)->GetDistance()+DELTA_DISTANCE);
+            }
+        }
+    }
 }
 
 void CompassView::updateReading()
@@ -222,7 +262,7 @@ void CompassView::mousePressEvent(QMouseEvent *event)
     if (item != nullptr && item->type() == TRIANGEL_ITEM_TYPE)
     {
         int index = dynamic_cast<TriangleItem *>(item)->index;
-        detail->updateText(loader->pic(index), loader->name(index), loader->address(index), loader->intro(index));
+        detail->updateText(dynamic_cast<TriangleItem *>(item)->real_distance, loader->name(index), loader->address(index), loader->intro(index));
         detail->show();
     }
 }

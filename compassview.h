@@ -19,7 +19,7 @@
 #include <QStringList>
 #include <cmath>
 
-#define PI acos(-1)
+#define PI (acos(-1))
 using namespace std;
 
 using std::vector;
@@ -52,9 +52,6 @@ private:
     DataLoader* loader;
     DetailWidget* detail;
     SideBarWidget* side_bar;
-    double CalculateDistance();
-
-
     int color[5][3]={{236,200,53},{235,98,66},{118,170,209},{34,172,56},{159,160,160},};
 
 public:

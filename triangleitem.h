@@ -6,6 +6,7 @@
 // Mark: constants
 constexpr int TRIANGEL_ITEM_TYPE = 0;
 constexpr double BASE_DISTANCE = 300;
+constexpr double DELTA_DISTANCE=100;
 
 class TriangleItem : public QGraphicsItem
 {
@@ -25,6 +26,7 @@ public:
 
     double GetZhijiaobianLength() { return 200 * scale_factor_; }
     int index;
+    double real_distance;
 
 private:
     QColor color_;

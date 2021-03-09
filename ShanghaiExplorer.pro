@@ -35,4 +35,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     resources/resources.qrc
 
-DISTFILES +=
+DISTFILES += \
+    android/AndroidManifest.xml \
+    android/build.gradle \
+    android/res/values/libs.xml
+
+ICON
+
+ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
