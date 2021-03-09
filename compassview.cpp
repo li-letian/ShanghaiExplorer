@@ -25,12 +25,12 @@ CompassView::CompassView(QWidget *parent) : QGraphicsView(parent),
 {
 }
 
-int JudgeCover(TriangleItem* a,TriangleItem* b)
+int CompassView::JudgeCover(TriangleItem* a,TriangleItem* b)
 {
     auto degreea=asin(a->GetZhijiaobianLength()/a->GetDistance())* 180.0 / PI;
     auto degreeb=asin(b->GetZhijiaobianLength()/b->GetDistance())* 180.0 / PI;
     auto degree=abs(a->rotation()-b->rotation());
-    if(degreea+degreeb>degree&&(a->GetDistance()-b->GetDistance()<DELTA_DISTANCE))
+    if(degreea+degreeb>degree&&(abs(a->GetDistance()-b->GetDistance())<DELTA_DISTANCE))
     {
         if(a->real_distance<b->real_distance)
             return 1;
@@ -38,6 +38,31 @@ int JudgeCover(TriangleItem* a,TriangleItem* b)
             return -1;
     }
     return 0;
+}
+
+bool CompassView::JudgeAllCover()
+{
+    int len=triangles_.size();
+    bool flag=false;
+    for(int i=0;i<len;i++)
+    {
+        for(int j=i+1;j<i+len-1;j++)
+        {
+            int k=j%len;
+            int ans=JudgeCover(triangles_.at(i),triangles_.at(k));
+            if(ans<0)
+            {
+                triangles_.at(i)->SetDistance(triangles_.at(i)->GetDistance()+DELTA_DISTANCE);
+                flag=true;
+            }
+            else if(ans>0)
+            {
+               triangles_.at(k)->SetDistance(triangles_.at(k)->GetDistance()+DELTA_DISTANCE);
+               flag=true;
+            }
+        }
+    }
+    return flag;
 }
 
 void CompassView::paintAll()
@@ -107,7 +132,7 @@ void CompassView::paintAll()
         item->setRotation(ang);
         item->real_distance=dis0;
     }
-    double mindis=(1<<30);
+    double mindis=1e10;
     for(auto item:triangles_)
     {
         if(item->real_distance<mindis)
@@ -118,26 +143,10 @@ void CompassView::paintAll()
     for(auto item:triangles_)
     {
         double scale=(item->real_distance/mindis);
-        item->MySetScale(scale);
+        item->MySetScale(1.0/scale);
         item->SetDistance(BASE_DISTANCE+(scale-1.0)*DELTA_DISTANCE);
     }
-    int len=triangles_.size();
-    for(int i=0;i<len;i++)
-    {
-        for(int j=i+1;j<i+len-1;j++)
-        {
-            int k=j%len;
-            int ans=JudgeCover(triangles_.at(i),triangles_.at(k));
-            if(ans<0)
-            {
-                triangles_.at(i)->SetDistance(triangles_.at(i)->GetDistance()+DELTA_DISTANCE);
-            }
-            else if(ans>0)
-            {
-               triangles_.at(k)->SetDistance(triangles_.at(k)->GetDistance()+DELTA_DISTANCE);
-            }
-        }
-    }
+    for(int i=1;i<=10&&JudgeAllCover();i++);
 }
 
 void CompassView::updateReading()

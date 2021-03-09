@@ -41,6 +41,9 @@ private:
     void AddTriangles();
     void AddTriangleItem(double rotation_angle=0,double scale_factor=1.0,int index=0);
     void RotateAll(double rotation_angle);
+    bool JudgeAllCover();
+    int JudgeCover(TriangleItem* a,TriangleItem* b);
+
     QGraphicsPixmapItem* compass_item_;
     QGraphicsPixmapItem* north_item_;
     vector<TriangleItem*> triangles_;
